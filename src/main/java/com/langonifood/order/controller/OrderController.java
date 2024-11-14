@@ -56,10 +56,10 @@ public class OrderController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/port")
-    public String returnPort(@Value("${local.server.port}") String port){
-        return String.format("Request answered by instance running on port %s ", port);
-    }
+//    @GetMapping("/port")
+//    public String returnPort(@Value("${local.server.port}") String port){
+//        return String.format("Request answered by instance running on port %s ", port);
+//    }
 
 
 }
