@@ -11,6 +11,13 @@ public class PaymentListener {
     @RabbitListener(queues = "payments.order-details")
     public void receiveMessage(PaymentDto paymentDto){
 
+        if(paymentDto.getCcNumber().matches("10+")) {
+            throw new RuntimeException("Invalid card number");
+        }
+//        } if(paymentDto.getCcNumber().equals("0000000000000000")){
+//            throw new RuntimeException("Invalid card number");
+//        }
+
         String message= """
                 Payment information: %s
                 Order number: %s

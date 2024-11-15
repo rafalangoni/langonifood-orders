@@ -27,9 +27,21 @@ public class OrderAMQPConfiguration {
         return rabbitTemplate;
     }
 
+//    @Bean
+//    public Queue queueOrderDetails(){
+//        return new Queue("payments.order-details", false);
+//    }
+
     @Bean
     public Queue queueOrderDetails(){
-        return new Queue("payments.order-details", false);
+        return QueueBuilder.nonDurable("payments.order-details")
+                .deadLetterExchange("payments.dlx")
+                .build();
+    }
+
+    @Bean
+    public Queue queueDeadLetterQueueOrderDetails(){
+        return new Queue("payments.order-details-dlq", false);
     }
 
     @Bean
@@ -40,9 +52,22 @@ public class OrderAMQPConfiguration {
     }
 
     @Bean
+    public FanoutExchange deadLetterExchange(){
+        return ExchangeBuilder
+                .fanoutExchange("payments.dlx")
+                .build();
+    }
+
+    @Bean
     public Binding bindPaymentOrder(FanoutExchange fanoutExchange){
         return BindingBuilder.bind(queueOrderDetails())
                 .to(fanoutExchange);
+    }
+
+    @Bean
+    public Binding bindDeadLetterExchangePaymentOrder(FanoutExchange deadLetterExchange){
+        return BindingBuilder.bind(queueDeadLetterQueueOrderDetails())
+                .to(deadLetterExchange);
     }
 
     @Bean
